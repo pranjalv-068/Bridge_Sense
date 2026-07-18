@@ -1,0 +1,160 @@
+{
+  "model": {
+    "name": "BridgeSense-AnomalyNet-v2",
+    "runtime": "Qualcomm QNN (SNPE)",
+    "target": "Snapdragon NPU (Hexagon Tensor Processor)",
+    "format": "ONNX -> QNN context binary",
+    "quantization": "INT8",
+    "avg_inference_latency_ms": 4.1,
+    "throughput_inferences_per_sec": 238
+  },
+  "node_inferences": [
+    {
+      "node_id": "NODE_01",
+      "status": "warning",
+      "anomaly_score": 0.5,
+      "confidence": 0.95,
+      "classification": "warning",
+      "explanation": "Elevated readings: 2.5Hz vibration, 260.0\u00b5\u03b5 strain."
+    },
+    {
+      "node_id": "NODE_02",
+      "status": "good",
+      "anomaly_score": 0.02,
+      "confidence": 0.93,
+      "classification": "nominal",
+      "explanation": "Vibration, tilt, and strain within trained baseline envelope for NODE_02."
+    },
+    {
+      "node_id": "NODE_03",
+      "status": "good",
+      "anomaly_score": 0.1,
+      "confidence": 0.94,
+      "classification": "nominal",
+      "explanation": "Vibration, tilt, and strain within trained baseline envelope for NODE_03."
+    },
+    {
+      "node_id": "NODE_04",
+      "status": "good",
+      "anomaly_score": 0.1,
+      "confidence": 0.94,
+      "classification": "nominal",
+      "explanation": "Vibration, tilt, and strain within trained baseline envelope for NODE_04."
+    },
+    {
+      "node_id": "NODE_05",
+      "status": "good",
+      "anomaly_score": 0.13,
+      "confidence": 0.95,
+      "classification": "nominal",
+      "explanation": "Vibration, tilt, and strain within trained baseline envelope for NODE_05."
+    },
+    {
+      "node_id": "NODE_06",
+      "status": "good",
+      "anomaly_score": 0.21,
+      "confidence": 0.95,
+      "classification": "nominal",
+      "explanation": "Vibration, tilt, and strain within trained baseline envelope for NODE_06."
+    }
+  ],
+  "fatigue_analysis": {
+    "unit": "Fatigue Index (composite, 0-100)",
+    "hours_actual": [
+      "01:00",
+      "02:00",
+      "03:00",
+      "04:00",
+      "05:00",
+      "06:00",
+      "07:00",
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "13:00",
+      "14:00",
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+      "19:00",
+      "20:00",
+      "21:00",
+      "22:00",
+      "23:00",
+      "14:00"
+    ],
+    "actual_measurement": [
+      31.49,
+      31.9,
+      32.08,
+      32.44,
+      32.74,
+      32.91,
+      33.27,
+      33.43,
+      33.75,
+      33.93,
+      34.12,
+      34.44,
+      34.92,
+      35.12,
+      35.36,
+      35.76,
+      36.64,
+      37.37,
+      38.03,
+      38.92,
+      39.44,
+      40.28,
+      40.9,
+      35.2
+    ],
+    "predictive_maintenance_trend": [
+      31.18,
+      31.75,
+      32.33,
+      32.18,
+      32.81,
+      33.02,
+      33.17,
+      33.47,
+      33.4,
+      33.58,
+      33.88,
+      34.58,
+      34.86,
+      34.97,
+      35.43,
+      35.72,
+      36.48,
+      37.61,
+      38.19,
+      38.72,
+      39.5,
+      40.3,
+      41.2,
+      34.5
+    ],
+    "hours_forecast": [
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+      "19:00",
+      "20:00"
+    ],
+    "forecast_projection": [
+      35.38,
+      35.55,
+      35.73,
+      35.9,
+      36.08,
+      36.26
+    ],
+    "maintenance_recommendation_hours": 9,
+    "summary": "Mild vibration fluctuations recorded"
+  }
+}

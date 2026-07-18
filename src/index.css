@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #0a0e14;
+  --panel: #10151f;
+  --panel-border: #1e2733;
+  --text-hi: #eef2f7;
+  --text-mid: #8a96a8;
+  --text-dim: #57626f;
+  --cyan: #4fd8ff;
+  --cyan-dim: rgba(79, 216, 255, 0.35);
+  --green: #22c55e;
+  --yellow: #eab308;
+  --red: #ef4444;
+  --red-glow: rgba(239, 68, 68, 0.18);
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--text-hi);
+  background:
+    radial-gradient(1200px 500px at 15% -10%, rgba(79,216,255,0.06), transparent),
+    var(--bg);
+}
+
+.app {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 20px 24px 64px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.status-dot.good { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.7); }
+.status-dot.warning { background: var(--yellow); box-shadow: 0 0 8px rgba(234,179,8,0.7); }
+.status-dot.critical { background: var(--red); box-shadow: 0 0 10px rgba(239,68,68,0.9); }
+
+.status-dot.pulse.critical { animation: pulse-red 1.6s ease-in-out infinite; }
+.status-dot.pulse.warning { animation: pulse-yellow 2.2s ease-in-out infinite; }
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+  50% { box-shadow: 0 0 16px 4px rgba(239,68,68,0.9); }
+}
+@keyframes pulse-yellow {
+  0%, 100% { box-shadow: 0 0 6px rgba(234,179,8,0.5); }
+  50% { box-shadow: 0 0 14px 3px rgba(234,179,8,0.8); }
+}
+
+::selection { background: var(--cyan-dim); }
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot.pulse { animation: none !important; }
+}
