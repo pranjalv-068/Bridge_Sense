@@ -293,7 +293,9 @@ async def receive_telemetry(payload: TelemetryPayload):
     """Handles incoming telemetry payloads from edge nodes."""
     try:
         record = await process_incoming_telemetry(payload)
-        
+
+        raw_data = get_raw_data()
+        processed_data = get_processed_data()
 
         await manager.broadcast({
             "type": "update",
@@ -305,7 +307,6 @@ async def receive_telemetry(payload: TelemetryPayload):
     except Exception as e:
         logger.error(f"Error processing telemetry POST: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
 @router.post("/api/fatigue-data")
 @router.post("/fatigue")
 async def receive_fatigue(payload: FatiguePayload):
