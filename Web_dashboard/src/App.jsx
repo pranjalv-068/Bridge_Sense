@@ -23,28 +23,49 @@ function App() {
   }, [rawData.active_alert]);
 
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const backendHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? '127.0.0.1'
+      : window.location.hostname;
+    const backendBase = `http://${backendHost}:8000`;
+    const wsUrl = `ws://${backendHost}:8000/ws/telemetry`;
+
+    const loadLiveData = async () => {
       try {
-        const rawRes = await fetch('http://localhost:8000/api/raw-data');
-        const processedRes = await fetch('http://localhost:8000/api/processed-data');
+        const [rawRes, processedRes] = await Promise.all([
+          fetch(`${backendBase}/api/raw-data`),
+          fetch(`${backendBase}/api/processed-data`)
+        ]);
+
         if (rawRes.ok && processedRes.ok) {
           const rawJson = await rawRes.json();
           const processedJson = await processedRes.json();
           setRawData(rawJson);
           setNpuData(processedJson);
+          setWsStatus('connected');
+          return true;
         }
+        return false;
       } catch (err) {
-        console.warn('Backend server not reachable on http://localhost:8000. Using local mock/cache data.', err);
+        console.warn(`Backend server not reachable on ${backendBase}. Using local mock/cache data.`, err);
+        return false;
       }
     };
 
-    fetchInitialData();
-
     let ws = null;
     let reconnectTimeout = null;
+    let pollTimer = null;
+
+    const fetchInitialData = async () => {
+      await loadLiveData();
+    };
+
+    fetchInitialData();
+    pollTimer = setInterval(() => {
+      loadLiveData();
+    }, 2000);
 
     const connectWS = () => {
-      ws = new WebSocket('ws://localhost:8000/ws/telemetry');
+      ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
         console.log('Connected to BridgeSense WebSocket telemetry stream');
@@ -80,6 +101,7 @@ function App() {
     return () => {
       if (ws) ws.close();
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (pollTimer) clearInterval(pollTimer);
     };
   }, []);
 
