@@ -63,9 +63,18 @@ def seed_database_if_empty():
                 
                 recon_err = round((vib / 5.0) * 0.4 + (strain / 500.0) * 0.6, 3)
                 
-                severity_data = calculate_severity(recon_err)
-                severity_level = severity_data["level"]
-                confidence = severity_data["confidence"]
+                from backend.app.services.severity import compute_severity, load_calibration
+                calibration = load_calibration(node_id)
+                severity_res = compute_severity(
+                    reconstruction_error=recon_err,
+                    temperature=25.0,
+                    frequency=vib,
+                    health_trend=0.0,
+                    calibration=calibration
+                )
+                severity_level = severity_res.level
+                confidence = round(severity_res.confidence * 100.0, 1)
+                severity_score = severity_res.score
                 
                 llm_summary = generate_fallback_explanation(
                     node_id, severity_level, recon_err, vib, strain, "Stable", None
@@ -84,14 +93,15 @@ def seed_database_if_empty():
                     "temperature": 25.0,
                     "reconstruction_error": recon_err,
                     "health_index": int(100 * math.exp(-recon_err / 3.0)),
-                    "edge_state": "Watch" if recon_err > 0.312 else "Normal",
+                    "edge_state": "Alert" if recon_err >= 1.00 else ("Watch" if recon_err >= 0.45 else "Normal"),
                     "severity": severity_level,
                     "confidence": confidence,
                     "forecast_eta": None,
                     "forecast_trend": "Stable",
                     "llm_summary": llm_summary,
                     "battery_pct": battery,
-                    "signal_dbm": signal
+                    "signal_dbm": signal,
+                    "severity_score": severity_score
                 }
                 insert_telemetry(record)
                 
@@ -111,8 +121,28 @@ def seed_database_if_empty():
     except Exception as e:
         logger.error(f"Error seeding database: {e}")
 
+def check_and_update_schema():
+    """Checks if telemetry database schema matches latest structure, deleting it if outdated to trigger re-creation."""
+    from backend.app.config import DB_PATH
+    import sqlite3
+    if not DB_PATH.exists():
+        return
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(telemetry)")
+        columns = [row[1] for row in cursor.fetchall()]
+        conn.close()
+        if "severity_score" not in columns:
+            logger.info("Database schema update required. Deleting old bridgesense.db database...")
+            DB_PATH.unlink()
+            logger.info("Old database file deleted.")
+    except Exception as ex:
+        logger.error(f"Error checking database schema: {ex}")
+
 @app.on_event("startup")
 def startup_event():
+    check_and_update_schema()
     init_db()
     seed_database_if_empty()
     logger.info("FastAPI backend startup complete.")

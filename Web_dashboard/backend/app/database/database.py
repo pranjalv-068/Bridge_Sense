@@ -37,7 +37,8 @@ def init_db():
             forecast_trend TEXT,
             llm_summary TEXT,
             battery_pct INTEGER,
-            signal_dbm INTEGER
+            signal_dbm INTEGER,
+            severity_score REAL
         )
     """)
     
@@ -64,12 +65,12 @@ def insert_telemetry(data: Dict[str, Any]) -> int:
             node_id, timestamp, rms, stddev, peak, frequency, crest_factor,
             tilt, strain, temperature, reconstruction_error, health_index,
             edge_state, severity, confidence, forecast_eta, forecast_trend, 
-            llm_summary, battery_pct, signal_dbm
+            llm_summary, battery_pct, signal_dbm, severity_score
         ) VALUES (
             :node_id, :timestamp, :rms, :stddev, :peak, :frequency, :crest_factor,
             :tilt, :strain, :temperature, :reconstruction_error, :health_index,
             :edge_state, :severity, :confidence, :forecast_eta, :forecast_trend, 
-            :llm_summary, :battery_pct, :signal_dbm
+            :llm_summary, :battery_pct, :signal_dbm, :severity_score
         )
     """
     

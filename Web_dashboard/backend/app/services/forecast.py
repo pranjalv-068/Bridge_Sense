@@ -18,9 +18,13 @@ def calculate_forecast(node_id: str, current_error: float) -> Dict[str, Any]:
     
     # If we don't have enough history, default to stable
     if len(errors) < 3:
+        import math
+        current_health = int(round(100 * math.exp(-current_error / 3.0)))
         return {
             "eta_hours": None,
-            "trend": "Stable"
+            "trend": "Stable",
+            "eta_days": None,
+            "predicted_health": current_health
         }
     
     # Ensure current error is included as the latest point if it isn't already
@@ -70,7 +74,18 @@ def calculate_forecast(node_id: str, current_error: float) -> Dict[str, Any]:
         trend = "Stable"
         eta_hours = None
         
+    # 4. Predict health in 24 hours
+    import math
+    steps_in_24h = 24.0 / step_hours
+    predicted_error_24h = max(0.0, current_error + slope * steps_in_24h)
+    predicted_health = int(round(100 * math.exp(-predicted_error_24h / 3.0)))
+    predicted_health = max(0, min(100, predicted_health))
+    
+    eta_days = round(eta_hours / 24.0, 2) if eta_hours is not None else None
+        
     return {
         "eta_hours": eta_hours,
-        "trend": trend
+        "trend": trend,
+        "eta_days": eta_days,
+        "predicted_health": predicted_health
     }
