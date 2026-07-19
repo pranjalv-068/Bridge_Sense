@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BridgeSense</string>
+    <string name="app_tagline">Real-Time Bridge Intelligence</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_camera">Capture</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Live Monitor</string>
+    <string name="bridge_health_label">Bridge Health</string>
+    <string name="nodes_active_label">Nodes Active</string>
+    <string name="node_status_normal">Normal</string>
+    <string name="node_status_warning">Warning</string>
+    <string name="node_status_critical">Critical</string>
+    <string name="node_status_offline">Offline</string>
+    <string name="sensor_vibration">Vibration</string>
+    <string name="sensor_tilt">Tilt</string>
+    <string name="sensor_temp">Temp</string>
+    <string name="last_updated">Updated</string>
+    <string name="capture_node_photo">Capture Photo</string>
+    <string name="ai_prediction">AI Prediction</string>
+
+    <!-- Camera -->
+    <string name="camera_title">Field Capture</string>
+    <string name="camera_yolox_ready">YOLOX-Small ready — NPU accelerated</string>
+    <string name="camera_yolox_mock">Mock detection mode — No model loaded</string>
+    <string name="camera_capture">Capture</string>
+    <string name="camera_retake">Retake</string>
+    <string name="camera_upload">Upload to AI PC</string>
+    <string name="camera_analyzing">Analyzing with YOLOX…</string>
+    <string name="camera_select_node">Select Node</string>
+    <string name="camera_permission_required">Camera permission required</string>
+    <string name="camera_grant_permission">Grant Permission</string>
+
+    <!-- Alerts -->
+    <string name="alerts_title">Alert Feed</string>
+    <string name="alerts_empty">No alerts yet — bridge is stable</string>
+    <string name="alert_clear_all">Clear All</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_connection_header">AI PC Connection</string>
+    <string name="settings_ip">AI PC IP Address</string>
+    <string name="settings_ip_hint">e.g. 192.168.1.100</string>
+    <string name="settings_port">WebSocket Port</string>
+    <string name="settings_port_hint">Default: 8080</string>
+    <string name="settings_test_connection">Test Connection</string>
+    <string name="settings_mock_mode">Mock Mode (Demo)</string>
+    <string name="settings_mock_mode_desc">Simulated sensor data — no AI PC needed</string>
+    <string name="settings_engineer_name">Engineer Name</string>
+    <string name="settings_engineer_hint">Your name / badge ID</string>
+    <string name="settings_yolox_info">YOLOX-Small (Qualcomm AI Hub)</string>
+    <string name="settings_model_loaded">Model loaded — Hexagon NPU ready</string>
+    <string name="settings_model_missing">Model not found — using mock detections</string>
+
+    <!-- Upload -->
+    <string name="upload_success">Photo uploaded to AI PC ✓</string>
+    <string name="upload_failed">Upload failed — check connection</string>
+    <string name="uploading">Uploading…</string>
+
+    <!-- Connection -->
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connecting">Connecting…</string>
+    <string name="connection_success">Connected to AI PC ✓</string>
+    <string name="connection_failed">Connection failed — check IP and port</string>
+
+    <!-- Misc -->
+    <string name="mock_badge">MOCK MODE</string>
+    <string name="unit_ms2">m/s²</string>
+    <string name="unit_deg">°</string>
+    <string name="unit_celsius">°C</string>
+    <string name="version_name">v1.0.0 — BridgeSense</string>
+</resources>

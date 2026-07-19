@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- === BridgeSense Dark Theme Color Palette === -->
+
+    <!-- Base backgrounds -->
+    <color name="bg_primary">#0A0E1A</color>
+    <color name="bg_surface">#0F1629</color>
+    <color name="bg_card">#141C35</color>
+    <color name="bg_card_elevated">#1A2240</color>
+
+    <!-- Brand / Accent -->
+    <color name="accent_cyan">#00D4FF</color>
+    <color name="accent_cyan_dim">#0099BB</color>
+    <color name="accent_purple">#7B2FBE</color>
+    <color name="accent_purple_dim">#5A1E8C</color>
+
+    <!-- Status colors -->
+    <color name="status_normal">#00E676</color>
+    <color name="status_normal_dim">#003D15</color>
+    <color name="status_warning">#FFB300</color>
+    <color name="status_warning_dim">#3D2B00</color>
+    <color name="status_critical">#FF1744</color>
+    <color name="status_critical_dim">#3D0010</color>
+    <color name="status_offline">#546E7A</color>
+    <color name="status_offline_dim">#1A2226</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8899AA</color>
+    <color name="text_hint">#445566</color>
+    <color name="text_on_accent">#000000</color>
+
+    <!-- Divider / Border -->
+    <color name="divider">#1E2A45</color>
+    <color name="border_dim">#243050</color>
+
+    <!-- Overlay / Scrim -->
+    <color name="scrim">#99000000</color>
+
+    <!-- Material theme required -->
+    <color name="colorPrimary">#00D4FF</color>
+    <color name="colorPrimaryVariant">#0099BB</color>
+    <color name="colorOnPrimary">#000000</color>
+    <color name="colorSecondary">#7B2FBE</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="colorBackground">#0A0E1A</color>
+    <color name="colorSurface">#0F1629</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+    <color name="colorOnSurface">#FFFFFF</color>
+    <color name="colorError">#FF1744</color>
+    <color name="colorOnError">#FFFFFF</color>
+</resources>
