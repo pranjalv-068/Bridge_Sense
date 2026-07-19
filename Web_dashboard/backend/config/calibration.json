@@ -1,0 +1,17 @@
+{
+  "NODE_01": {
+    "baseline_temperature": 30.0,
+    "baseline_frequency": 8.0,
+    "severity_thresholds": { "normal": 25, "minor": 50, "major": 75 }
+  },
+  "NODE_03": {
+    "baseline_temperature": 30.0,
+    "baseline_frequency": 8.0,
+    "severity_thresholds": { "normal": 25, "minor": 50, "major": 75 }
+  },
+  "default": {
+    "baseline_temperature": 30.0,
+    "baseline_frequency": 8.0,
+    "severity_thresholds": { "normal": 25, "minor": 50, "major": 75 }
+  }
+}

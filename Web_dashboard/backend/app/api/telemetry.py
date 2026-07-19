@@ -12,7 +12,7 @@ from backend.app.database.database import (
     get_all_latest_telemetry,
     get_recent_fatigue
 )
-from backend.app.services.severity import calculate_severity
+from backend.app.services.severity import calculate_severity, compute_severity, load_calibration
 from backend.app.services.forecast import calculate_forecast
 from backend.app.services.llm import get_llm_explanation
 from backend.app.websocket.manager import manager
@@ -214,6 +214,24 @@ def get_processed_data():
         
     return template
 
+def calculate_health_trend(history: list) -> float:
+    """Calculates linear slope of the last N health_index values."""
+    health_indices = [row["health_index"] for row in history if row.get("health_index") is not None]
+    n = len(health_indices)
+    if n < 3:
+        return 0.0
+    x = list(range(n))
+    y = health_indices
+    sum_x = sum(x)
+    sum_y = sum(y)
+    sum_xx = sum(val * val for val in x)
+    sum_xy = sum(val_x * val_y for val_x, val_y in zip(x, y))
+    denominator = (n * sum_xx - sum_x * sum_x)
+    if denominator == 0:
+        return 0.0
+    slope = (n * sum_xy - sum_x * sum_y) / denominator
+    return slope
+
 async def process_incoming_telemetry(payload: TelemetryPayload) -> Dict[str, Any]:
     """Helper pipeline to analyze, forecast, and generate explanation for telemetry."""
     node_id = normalize_node_id(payload.node_id)
@@ -237,28 +255,34 @@ async def process_incoming_telemetry(payload: TelemetryPayload) -> Dict[str, Any
         import math
         health_idx = int(100 * math.exp(-recon_err / 3.0))
         
-    edge_state = payload.edge_state or ("Watch" if recon_err > 0.312 else "Normal")
+    edge_state = payload.edge_state or ("Alert" if recon_err >= 1.00 else ("Watch" if recon_err >= 0.45 else "Normal"))
+    
+    # Fetch recent history (up to 20 points) for trend analysis
+    history = get_recent_telemetry(node_id, limit=20)
+    health_trend = calculate_health_trend(history)
     
     # 1. Severity Engine
-    severity_data = calculate_severity(recon_err)
-    severity_level = severity_data["level"]
-    confidence = severity_data["confidence"]
+    calibration = load_calibration(node_id)
+    severity_res = compute_severity(
+        reconstruction_error=recon_err,
+        temperature=temp,
+        frequency=freq,
+        health_trend=health_trend,
+        calibration=calibration
+    )
+    severity_level = severity_res.level
+    severity_score = severity_res.score
+    confidence = round(severity_res.confidence * 100.0, 1)  # Scale to 0-100 for DB compatibility
     
     # 2. Forecasting Engine
     forecast_data = calculate_forecast(node_id, recon_err)
     eta_hours = forecast_data["eta_hours"]
     trend = forecast_data["trend"]
+    eta_days = forecast_data["eta_days"]
+    predicted_health = forecast_data["predicted_health"]
     
-    # 3. LLM Service
-    llm_summary = get_llm_explanation(
-        node_id=node_id,
-        severity=severity_level,
-        error=recon_err,
-        vibration=freq,
-        strain=strain,
-        trend=trend,
-        eta_hours=eta_hours
-    )
+    # 3. LLM Service (Deferred, stored as empty/None)
+    llm_summary = None
     
     record = {
         "node_id": node_id,
@@ -280,12 +304,18 @@ async def process_incoming_telemetry(payload: TelemetryPayload) -> Dict[str, Any
         "forecast_trend": trend,
         "llm_summary": llm_summary,
         "battery_pct": payload.battery_pct or 100,
-        "signal_dbm": payload.signal_dbm or -50
+        "signal_dbm": payload.signal_dbm or -50,
+        "severity_score": severity_score
     }
     
     insert_telemetry(record)
     
-    return record
+    # Merge forecast predictions into returned record dict for payload construction
+    record_with_forecast = record.copy()
+    record_with_forecast["eta_days"] = eta_days
+    record_with_forecast["predicted_health"] = predicted_health
+    
+    return record_with_forecast
 
 @router.post("/api/node-data")
 @router.post("/telemetry")
@@ -297,11 +327,31 @@ async def receive_telemetry(payload: TelemetryPayload):
         raw_data = get_raw_data()
         processed_data = get_processed_data()
 
+        # Construct decision payload
+        decision_payload = {
+            "edge": {
+                "health_index": record["health_index"],
+                "edge_state": record["edge_state"],
+            },
+            "severity": {
+                "level": record["severity"],
+                "score": record["severity_score"],
+            },
+            "forecast": {
+                "eta_days": record["eta_days"],
+                "predicted_health": record["predicted_health"],
+            },
+        }
+
+        # Broadcast the dashboard update payload
         await manager.broadcast({
             "type": "update",
             "raw_data": raw_data,
             "processed_data": processed_data
         })
+        
+        # Broadcast the clean decision payload
+        await manager.broadcast(decision_payload)
         
         return {"status": "success", "message": f"Telemetry processed for node {record['node_id']}"}
     except Exception as e:

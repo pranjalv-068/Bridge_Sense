@@ -23,6 +23,7 @@ class TelemetryPayload(BaseModel):
     reconstruction_error: Optional[float] = None
     health_index: Optional[int] = None
     edge_state: Optional[str] = None
+    severity_score: Optional[float] = None
     
     battery_pct: Optional[int] = None
     signal_dbm: Optional[int] = None
