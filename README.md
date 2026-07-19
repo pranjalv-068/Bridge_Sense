@@ -219,3 +219,13 @@ Bridge Health Index
         ▼
 Normal / Watch / Alert
 ```
+<img width="1600" height="850" alt="WhatsApp Image 2026-07-19 at 12 37 26 PM" src="https://github.com/user-attachments/assets/817169e6-6c95-42e2-bef2-9aacf5e7a97b" />
+
+<img width="1600" height="850" alt="WhatsApp Image 2026-07-19 at 12 37 26 PM" src="https://github.com/user-attachments/assets/8ddcefaf-724d-4b83-ba20-ef53ae8a2fb9" />
+
+<img width="1600" height="850" alt="image" src="https://github.com/user-attachments/assets/5a86b259-e95a-4304-9b69-89e8111beda3" />
+<img width="636" height="986" alt="image" src="https://github.com/user-attachments/assets/5ceae3ca-a1d1-46a5-96ea-31b2e26530c2" />
+
+<img width="636" height="986" alt="image" src="https://github.com/user-attachments/assets/d96b45eb-30f8-478f-bb1c-22cf56f11fa4" />
+
+
