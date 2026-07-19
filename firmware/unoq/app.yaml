@@ -1,0 +1,9 @@
+name: Bridge_Sense
+description: ""
+ports: []
+bricks:
+- bridge_sense:
+    variables:
+      AI_PC_URL: http://10.241.204.168:8000/telemetry
+      EIM_PATH: "/app/assets/pranjalv-project-1-linux-aarch64-v1-impulse-#1.eim"
+icon: 😀

@@ -1,0 +1,16 @@
+id: bridge_sense
+name: bridge_sense
+description: "Runs the BridgeSense autoencoder for structural health monitoring."
+variables:
+  - name: EIM_PATH
+    value: /home/arduino/ArduinoApps/Bridge_Sense/assets/pranjalv-project-1-linux-aarch64-v1-impulse-#1.eim
+    description: Path to the compiled Edge Impulse Linux model binary
+    required: true
+  - name: AI_PC_URL
+    value: http://10.241.204.168:8000/telemetry
+    description: Dashboard backend endpoint to POST results to
+    required: true
+dependencies:
+  python:
+    - edge_impulse_linux
+    - requests
