@@ -1,6 +1,5 @@
 import os
 import sys
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # --- TEMPORARY DEBUG ---
@@ -23,25 +22,29 @@ from bricks.bridge_sense import BridgeSenseModel
 import time
 import requests
 
+from net_receiver import NodeReceiver
+from features import extract_features
+
 AI_PC_URL = os.environ.get("AI_PC_URL")
 NODE_ID = "N3"
+WIFI_PORT = int(os.environ.get("WIFI_PORT", 5000))
 
 model = BridgeSenseModel()
 
+receiver = NodeReceiver(port=WIFI_PORT)
+receiver.start()
 
-def read_from_stm32() -> list[float]:
-    """TEMPORARY MOCK — replace once the sketch + Bridge API is wired up."""
-    import random
-    return [
-        0.25 + random.uniform(-0.02, 0.02),
-        0.035 + random.uniform(-0.005, 0.005),
-        0.50 + random.uniform(-0.05, 0.05),
-        8.08 + random.uniform(-0.2, 0.2),
-        2.00 + random.uniform(-0.1, 0.1),
-        0.021 + random.uniform(-0.005, 0.005),
-        193.6 + random.uniform(-10, 10),
-        30.2 + random.uniform(-1, 1),
-    ]
+
+def read_from_node(timeout: float = 5.0):
+    """Blocks for a fresh packet from the NodeMCU, runs Phase 3/4
+    (DSP + feature extraction), and returns the 8-value feature vector.
+    Returns None if nothing arrives within `timeout` seconds."""
+    packet = receiver.wait_for_packet(timeout=timeout)
+    if packet is None:
+        return None
+    return extract_features(
+        packet["vibration"], packet["strain"], packet["temperature"], packet["tilt"]
+    )
 
 
 def send_to_ai_pc(payload: dict) -> None:
@@ -56,7 +59,11 @@ def send_to_ai_pc(payload: dict) -> None:
 
 def main():
     while True:
-        raw = read_from_stm32()
+        raw = read_from_node()
+        if raw is None:
+            print("[MAIN] No packet from NodeMCU yet, waiting...")
+            continue
+
         result = model.infer(raw)
         payload = {
             "node_id": NODE_ID,
@@ -69,7 +76,6 @@ def main():
         }
         print(payload)
         send_to_ai_pc(payload)
-        time.sleep(2)
 
 
 if __name__ == "__main__":
